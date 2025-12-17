@@ -1,6 +1,8 @@
+# algorithms/sjf.py
+
 def sjf(processes):
     """
-    TODO: Implement Shortest Job First (SJF) CPU scheduling algorithm
+    Implement Shortest Job First (SJF) CPU scheduling algorithm
     
     SJF is a non-preemptive scheduling algorithm where the process with 
     the smallest burst time is selected for execution next.
@@ -18,20 +20,38 @@ def sjf(processes):
         - completion_times: Dictionary {pid: completion_time}
     """
     
-    # TODO:
-    # Currently returning empty data - replace with your implementation
+    # TODO 1
+    processes = sorted(processes, key=lambda p: (p[1], p[2])) 
     
+    # TODO 2
+    current_time = 0
     gantt_chart = []
     waiting_times = {}
     turnaround_times = {}
     completion_times = {}
+    ready_queue = []  
+    index = 0 
     
-    # TODO: Step 1 - Sort processes by arrival time (and burst time for ties)
+    # TODO 3
+    while index < len(processes) or ready_queue:
+        while index < len(processes) and processes[index][1] <= current_time:
+            ready_queue.append(processes[index])
+            index += 1
+        
+        if not ready_queue:
+            if index < len(processes):
+                current_time = processes[index][1]
+            continue
+        ready_queue.sort(key=lambda p: p[2])
+        pid, arrival_time, burst_time = ready_queue.pop(0)
+        start_time = current_time
+        end_time = current_time + burst_time
+        gantt_chart.append((pid, start_time, end_time))
+        completion_times[pid] = end_time
+        turnaround_times[pid] = end_time - arrival_time
+        waiting_times[pid] = turnaround_times[pid] - burst_time
+        
+        current_time = end_time
     
-    # TODO: Step 2 - Initialize variables
-    
-    # TODO: Step 3 - Main scheduling loop
-    
-    # TODO: Step 4 - Return the results
-    
+    # TODO 4
     return gantt_chart, waiting_times, turnaround_times, completion_times
